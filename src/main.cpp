@@ -328,6 +328,14 @@ static void PageDashboard(const SystemMemory& sys, const std::vector<AdapterVram
     }
     ImGui::Dummy(ImVec2(0, 6));
 
+    // --- Page file bar (how much commit is paged out vs total page file) ---
+    {
+        double pf = sys.pageFileTotal ? (double)sys.pageFileInUse / sys.pageFileTotal : 0.0;
+        UsageBar("Page file  \xc2\xb7  commit paged out to disk vs total page file",
+                 sys.pageFileInUse, sys.pageFileTotal, pf, col::goldSoft);
+    }
+    ImGui::Dummy(ImVec2(0, 8));
+
     // --- Detail chips (two rows of four) ---
     const float cgap = 12.0f;
     float cw = (ImGui::GetContentRegionAvail().x - 3 * cgap) / 4.0f;
@@ -356,6 +364,9 @@ static void PageProcesses(const SystemMemory& sys, const std::vector<ProcessMemo
                  sys.physUsed, sys.physTotal, sys.physPercent, col::gold);
         UsageBar("Commit charge  \xc2\xb7  RAM + page file, where private commit lands",
                  sys.commitTotal, sys.commitLimit, sys.commitPercent, col::red);
+        double pf = sys.pageFileTotal ? (double)sys.pageFileInUse / sys.pageFileTotal : 0.0;
+        UsageBar("Page file  \xc2\xb7  commit paged out to disk vs total page file",
+                 sys.pageFileInUse, sys.pageFileTotal, pf, col::goldSoft);
         char sum[32];
         ImGui::TextColored(col::dim, "%d processes  \xc2\xb7  %s readable private commit total",
                            (int)procs.size(), FmtBytes(accessiblePrivate, sum, sizeof(sum)));

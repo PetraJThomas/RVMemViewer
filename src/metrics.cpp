@@ -92,6 +92,28 @@ bool QuerySystemMemory(SystemMemory& out) {
         out.processCount   = pi.ProcessCount;
         out.threadCount    = pi.ThreadCount;
         out.handleCount    = pi.HandleCount;
+
+        // Real page file size + usage. MEMORYSTATUSEX's "page file" fields are
+        // actually the commit limit, so ask the kernel directly.
+        // SystemPageFileInformation = 18; sizes are in pages.
+        typedef LONG (NTAPI* PFN_NQSI)(ULONG, PVOID, ULONG, PULONG);
+        struct PF_ENTRY { ULONG NextEntryOffset, TotalSize, TotalInUse, PeakUsage; };
+        static PFN_NQSI nq = (PFN_NQSI)GetProcAddress(
+            GetModuleHandleW(L"ntdll.dll"), "NtQuerySystemInformation");
+        if (nq) {
+            std::vector<BYTE> buf(65536);
+            ULONG ret = 0;
+            if (nq(18, buf.data(), (ULONG)buf.size(), &ret) == 0 && ret >= sizeof(PF_ENTRY)) {
+                // First entry = primary page file (covers ~all systems). Reading
+                // only it avoids the duplicate-entry over-count some builds return.
+                auto* e = reinterpret_cast<PF_ENTRY*>(buf.data());
+                out.pageFileTotal = (uint64_t)e->TotalSize  * pg;
+                out.pageFileInUse = (uint64_t)e->TotalInUse * pg;
+            }
+        }
+        // Fallback / sanity: page file size = commit limit - physical RAM.
+        if (out.pageFileTotal == 0 && out.commitLimit > out.physTotal)
+            out.pageFileTotal = out.commitLimit - out.physTotal;
     }
     return true;
 }

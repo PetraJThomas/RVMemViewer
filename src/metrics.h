@@ -34,6 +34,11 @@ struct SystemMemory {
     uint32_t handleCount  = 0;
 
     uint32_t memoryLoad = 0; // dwMemoryLoad, 0..100
+
+    // Page file(s) on disk (authoritative, from NtQuerySystemInformation).
+    // pageFileInUse is the portion of commit that's actually paged out to disk.
+    uint64_t pageFileTotal = 0; // sum of page file sizes
+    uint64_t pageFileInUse = 0; // currently stored in the page file
 };
 
 // Per-process memory. The key field is privateBytes (private commit):
