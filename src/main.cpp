@@ -525,12 +525,12 @@ static void DrawUI(const SystemMemory& sys, const std::vector<AdapterVram>& gpus
 
     // ---- Sidebar ----
     ImGui::PushStyleColor(ImGuiCol_ChildBg, col::side);
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(16, 18));
-    ImGui::BeginChild("sidebar", ImVec2(196, 0), 0, ImGuiWindowFlags_NoScrollbar);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(22, 24));
+    ImGui::BeginChild("sidebar", ImVec2(202, 0), 0, ImGuiWindowFlags_NoScrollbar);
     PushF(g_fH2);
-    ImGui::TextColored(col::blue, "MEM");
-    ImGui::SameLine(0, 4);
-    ImGui::TextColored(col::text, "Viewer");
+    ImGui::TextColored(col::blue, "RV");
+    ImGui::SameLine(0, 6);
+    ImGui::TextColored(col::text, "MEM Viewer");
     ImGui::PopFont();
     ImGui::TextColored(col::faint, "RAM \xc2\xb7 VRAM \xc2\xb7 commit");
     ImGui::Dummy(ImVec2(0, 18));
@@ -643,7 +643,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, LPWSTR, int) {
     WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0, 0, hInstance,
                        nullptr, nullptr, nullptr, nullptr, L"MemoryViewerWnd", nullptr };
     RegisterClassExW(&wc);
-    HWND hwnd = CreateWindowW(wc.lpszClassName, L"Memory & VRAM Viewer",
+    HWND hwnd = CreateWindowW(wc.lpszClassName, L"RV MEM Viewer",
                               WS_OVERLAPPEDWINDOW, 100, 100, 1120, 800,
                               nullptr, nullptr, wc.hInstance, nullptr);
     if (!CreateDeviceD3D(hwnd)) {

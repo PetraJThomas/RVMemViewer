@@ -1,4 +1,4 @@
-# Memory & VRAM Viewer
+# RV MEM Viewer
 
 A low-profile Windows desktop tool that shows what's *actually* occupying your
 memory — including the private-commit (page-file-backed) numbers Task Manager's
