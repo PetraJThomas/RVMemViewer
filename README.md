@@ -1,12 +1,19 @@
-# RV MEM Viewer
+<p align="center">
+  <img src="Logo.png" alt="RV MEM Viewer" width="150">
+</p>
 
-A low-profile Windows desktop tool that shows what's **actually** occupying your
-memory - including the private-commit and page-file numbers Task Manager hides -
-plus true system-wide and per-process VRAM usage.
+<h1 align="center">RV MEM Viewer</h1>
 
-Built with **C++ + Dear ImGui** (Win32 + DirectX 11). GPU-drawn, custom
-gold/red theme, no .NET runtime. Idle footprint ~50 MB working set (mostly
-shared GPU driver DLLs).
+<p align="center">
+  A low-profile Windows monitor for what's <b>actually</b> occupying your memory -
+  the private-commit, page-file and compressed numbers Task Manager hides, plus
+  true system-wide and per-process VRAM.<br>
+  C++ + Dear ImGui (Win32 + DirectX 11) &middot; GPU-drawn &middot; ~50 MB &middot; no .NET runtime.
+</p>
+
+<p align="center">
+  <img src="docs/dashboard.png" alt="RV MEM Viewer dashboard" width="880">
+</p>
 
 ## Why it exists
 
@@ -33,12 +40,20 @@ sortable table of every process showing **private commit** vs **working set**.
 The gap between the two columns is memory paged to disk - the private-commit
 column has an inline heat bar so the page-file eaters jump out.
 
+<p align="center">
+  <img src="docs/processes.png" alt="Processes tab" width="880">
+</p>
+
 **GPU Memory** - leads with the **physically resident** VRAM (the real,
 card-capped number from PDH), then per-process **committed** allocations.
 Because GPU memory is virtualized, these overlap and sum to far more than the
 card holds: the compositor (`dwm`) double-counts every visible window's surface,
 and capture/overlay processes over-report - both are flagged inline so the
 numbers aren't mistaken for real occupancy.
+
+<p align="center">
+  <img src="docs/gpu.png" alt="GPU Memory tab" width="880">
+</p>
 
 ## Key concepts it makes visible
 
