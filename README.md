@@ -26,12 +26,19 @@ Built with **C++ + Dear ImGui** (Win32 + DirectX 11). GPU-drawn, dark UI, no
 
 Requires Visual Studio 2022/2026 (MSVC + Windows SDK) and git. No CMake needed.
 
+After a fresh clone, install the vendored dependency (Dear ImGui, pinned to a
+release tag) and build:
+
 ```bat
-git clone --depth 1 https://github.com/ocornut/imgui third_party\imgui
-build.bat
+setup.bat     :: like `npm install` - fetches third_party\imgui @ pinned tag
+build.bat     :: compiles build\MemoryViewer.exe
 ```
 
-Output: `build\MemoryViewer.exe`.
+`build.bat` auto-runs `setup.bat` if the dependency is missing, so `build.bat`
+alone works too. PowerShell users can run `.\setup.ps1` instead.
+
+To change the pinned Dear ImGui version, edit `IMGUI_TAG` in `setup.bat`
+(and `$imguiTag` in `setup.ps1`).
 
 If your Visual Studio lives elsewhere, edit the `VCVARS` path near the top of
 `build.bat`.

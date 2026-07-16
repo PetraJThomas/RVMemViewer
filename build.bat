@@ -12,9 +12,8 @@ call "%VCVARS%" >nul
 set "ROOT=%~dp0"
 set "IMGUI=%ROOT%third_party\imgui"
 if not exist "%IMGUI%\imgui.cpp" (
-    echo ERROR: Dear ImGui not found. Run:
-    echo   git clone --depth 1 https://github.com/ocornut/imgui third_party\imgui
-    exit /b 1
+    echo Dear ImGui not found - running setup.bat to install dependencies...
+    call "%ROOT%setup.bat" || exit /b 1
 )
 
 if not exist "%ROOT%build" mkdir "%ROOT%build"

@@ -24,8 +24,7 @@ obj/
 *.vcxproj.user
 CMakeSettings.json
 
-# --- Vendored dependency (cloned via build instructions, not committed) ---
-# See README: `git clone --depth 1 https://github.com/ocornut/imgui third_party\imgui`
+# --- Vendored dependency (installed by setup.bat / setup.ps1, not committed) ---
 third_party/imgui/
 
 # --- Misc ---
