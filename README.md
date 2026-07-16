@@ -1,7 +1,7 @@
 # RV MEM Viewer
 
 A low-profile Windows desktop tool that shows what's **actually** occupying your
-memory — including the private-commit and page-file numbers Task Manager hides —
+memory - including the private-commit and page-file numbers Task Manager hides -
 plus true system-wide and per-process VRAM usage.
 
 Built with **C++ + Dear ImGui** (Win32 + DirectX 11). GPU-drawn, custom
@@ -10,34 +10,34 @@ shared GPU driver DLLs).
 
 ## Why it exists
 
-Task Manager's per-process **Memory** column only shows the *working set* —
+Task Manager's per-process **Memory** column only shows the *working set* -
 physical RAM. It never shows **private commit**, the memory a process has
 committed that may be sitting in your **page file**. On a machine with a large
 page file (to survive heavy load without out-of-memory crashes), the commit
-charge can be tens of GB while the working sets stay small — and Task Manager
+charge can be tens of GB while the working sets stay small - and Task Manager
 gives you no way to see *who* is filling it. This tool does.
 
 It also untangles GPU memory, where Windows' virtualized (WDDM) accounting makes
-per-process numbers wildly exceed the physical card — showing the **real
+per-process numbers wildly exceed the physical card - showing the **real
 resident** number alongside the misleading committed ones.
 
 ## The three tabs
 
-**Dashboard** — live ring gauges for **RAM**, **commit charge**, and **VRAM**,
+**Dashboard** - live ring gauges for **RAM**, **commit charge**, and **VRAM**,
 a 2-minute history graph, a **page file** bar (paged-out commit vs total page
 file), and detail chips (available, cached, commit peak, kernel pools,
 process/thread/handle counts).
 
-**Processes** — a headline card (physical RAM, commit charge, page file) then a
+**Processes** - a headline card (physical RAM, commit charge, page file) then a
 sortable table of every process showing **private commit** vs **working set**.
-The gap between the two columns is memory paged to disk — the private-commit
+The gap between the two columns is memory paged to disk - the private-commit
 column has an inline heat bar so the page-file eaters jump out.
 
-**GPU Memory** — leads with the **physically resident** VRAM (the real,
+**GPU Memory** - leads with the **physically resident** VRAM (the real,
 card-capped number from PDH), then per-process **committed** allocations.
 Because GPU memory is virtualized, these overlap and sum to far more than the
 card holds: the compositor (`dwm`) double-counts every visible window's surface,
-and capture/overlay processes over-report — both are flagged inline so the
+and capture/overlay processes over-report - both are flagged inline so the
 numbers aren't mistaken for real occupancy.
 
 ## Key concepts it makes visible
@@ -108,7 +108,7 @@ third_party/imgui  Dear ImGui (vendored via git, not committed)
 The look is hand-built on top of Dear ImGui (no XAML): Segoe UI / Consolas fonts
 loaded from the system, a custom gold/red theme, rounded "card" containers, and
 `ImDrawList`-drawn ring gauges, sparklines and history graphs. Panels use
-`ImGuiChildFlags_AlwaysUseWindowPadding` — borderless children ignore
+`ImGuiChildFlags_AlwaysUseWindowPadding` - borderless children ignore
 `WindowPadding` without it.
 
 ## Ideas / next steps
