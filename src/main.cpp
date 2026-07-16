@@ -467,24 +467,42 @@ static void PageGpu(const std::vector<AdapterVram>& gpus, const std::vector<Proc
     ImGui::Dummy(ImVec2(0, 4));
 
     if (CardBegin("gpuProcCard", ImVec2(0, 0))) {
-        CardTitle("Per-process GPU memory  \xc2\xb7  committed, overlaps, not physical");
+        CardTitle("Per-process GPU memory  \xc2\xb7  what's using the VRAM above");
         PushF(g_fBody);
         ImGui::PushTextWrapPos(0.0f);
         ImGui::TextColored(col::dim,
-            "Committed (virtualized) allocations \xe2\x80\x94 they double-count shared surfaces and "
-            "include memory that isn't resident, so they exceed physical VRAM. Rank, don't total.");
+            "These are the processes holding VRAM. Values are committed (virtualized) and "
+            "double-count shared surfaces, so rank by the column \xe2\x80\x94 don't sum it.");
         ImGui::PopTextWrapPos();
         ImGui::PopFont();
 
-        for (const ProcessVram& p : procVram)
-            if (ClassifyGpuProc(p.name) == GpuProcKind::Compositor) {
-                PushF(g_fBody);
-                ImGui::TextColored(col::amber, "%s reports %s", p.name.c_str(), FmtBytes(p.dedicated, a, sizeof(a)));
-                ImGui::SameLine();
-                ImGui::TextColored(col::dim, "\xe2\x80\x94 the compositor: sum of every visible window's surface (double-counted).");
-                ImGui::PopFont();
-                break;
+        // Link the table back to the resident number: apps (minus the compositor's
+        // double-count) account for most of the on-card VRAM; the rest is the
+        // compositor's own surfaces + driver/system memory not owned by a process.
+        {
+            uint64_t residentDed = 0;
+            for (const AdapterVram& g : gpus) if (g.hasUsage) residentDed += g.dedicatedUsage;
+            uint64_t sumApps = 0, dwmDed = 0;
+            for (const ProcessVram& p : procVram) {
+                if (ClassifyGpuProc(p.name) == GpuProcKind::Compositor) dwmDed += p.dedicated;
+                else sumApps += p.dedicated;
             }
+            char sa[32], sr[32];
+            PushF(g_fBody);
+            ImGui::PushTextWrapPos(0.0f);
+            ImGui::TextColored(col::text,
+                "Excluding the compositor, these processes hold %s of the %s resident on-card "
+                "\xe2\x80\x94 that's what's in your VRAM. The rest is the compositor's own composition "
+                "surfaces plus driver/system memory not attributed to any process.",
+                FmtBytes(sumApps, sa, sizeof(sa)), FmtBytes(residentDed, sr, sizeof(sr)));
+            ImGui::PopTextWrapPos();
+            if (dwmDed) {
+                ImGui::TextColored(col::amber, "dwm.exe reports %s", FmtBytes(dwmDed, a, sizeof(a)));
+                ImGui::SameLine();
+                ImGui::TextColored(col::dim, "\xe2\x80\x94 the compositor double-counts every visible window's surface.");
+            }
+            ImGui::PopFont();
+        }
         ImGui::Spacing();
 
         if (procVram.empty()) {
